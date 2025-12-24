@@ -25,7 +25,7 @@ const AddJob = () => {
     e.preventDefault();
     try {
       // Send Token in Headers
-      await axios.post('http://localhost:5000/api/jobs', formData, {
+      await axios.post('https://job-appliaction-manager.onrender.com/api/jobs', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -21,7 +21,7 @@ const Dashboard = () => {
   const fetchJobs = async () => {
     try {
       // 2. Attach the token to the request "Header"
-      const res = await axios.get('http://localhost:5000/api/jobs', {
+      const res = await axios.get('https://job-appliaction-manager.onrender.com/api/jobs', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -41,7 +41,7 @@ const Dashboard = () => {
     if (window.confirm('Are you sure you want to delete this?')) {
       try {
         // 3. Attach token here too!
-        await axios.delete(`http://localhost:5000/api/jobs/${id}`, {
+        await axios.delete(`https://job-appliaction-manager.onrender.com/jobs/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

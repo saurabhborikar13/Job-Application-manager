@@ -27,7 +27,7 @@ const Register = () => {
     
     try {
       const { data } = await axios.post(
-        `http://localhost:5000/api/auth/${endpoint}`, 
+        `https://job-appliaction-manager.onrender.com/${endpoint}`, 
         isMember ? { email, password } : values
       );
       
