@@ -10,7 +10,10 @@ const jobRoutes = require('./routes/Jobs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+
+app.use(cors({
+    origin: 'https://job-application-manager-frontend.onrender.com/', 
+}));
 app.use(express.json());
 
 app.use('/api/jobRoutes', jobRoutes);
