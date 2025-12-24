@@ -27,7 +27,7 @@ const Register = () => {
     
     try {
       const { data } = await axios.post(
-        `https://job-appliaction-manager.onrender.com/${endpoint}`, 
+        `https://job-appliaction-manager.onrender.com/api/auth/${endpoint}`, 
         isMember ? { email, password } : values
       );
       
