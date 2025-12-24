@@ -3,8 +3,8 @@ const router = express.Router();
 const authenticateUser = require('../middleware/authentication');
 
 const {
-  createJob,
   getAllJobs,
+  createJob,
   getJob,
   deleteJob,
   updateJob
