@@ -40,13 +40,12 @@ const Dashboard = () => {
   const deleteJob = async (id) => {
     if (window.confirm('Are you sure you want to delete this?')) {
       try {
-        // 3. Attach token here too!
         await axios.delete(`https://job-appliaction-manager.onrender.com/api/Job/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        fetchJobs(); // Refresh list immediately
+        fetchJobs();
       } catch (error) {
         console.error(error);
         alert('Failed to delete job');
@@ -56,67 +55,82 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Header: Title + New Button */}
       <div className="header-section">
         <h2>Applications History</h2>
         <Link to="/add-job" className="btn btn-primary">+ New</Link>
       </div>
 
-      {/* The Notion-Style Table */}
       <div className="table-wrapper">
         <table className="job-table">
           <thead>
             <tr>
-              <th style={{ width: '25%' }}>🏢 Company</th>
-              <th style={{ width: '20%' }}>💼 Position</th>
+              <th style={{ width: '20%' }}>🏢 Company</th>
+              <th style={{ width: '15%' }}>💼 Position</th>
               <th style={{ width: '15%' }}>📍 Location</th>
-              <th style={{ width: '15%' }}>📊 Status</th>
+              <th style={{ width: '10%' }}>📊 Status</th>
               <th style={{ width: '15%' }}>📅 Date</th>
+              <th style={{ width: '15%' }}>📅 Resume Used</th>
               <th style={{ width: '10%' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {jobs.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                <td colSpan="7" style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
                   No jobs found. Click "+ New" to add one!
                 </td>
               </tr>
             ) : (
               jobs.map((job) => (
                 <tr key={job._id}>
-                  {/* Company Name with Icon */}
+                  {/* 1. Company Name */}
                   <td className="company-cell">
                      <span className="icon">📄</span> 
                      {job.company}
                   </td>
                   
-                  {/* Position */}
+                  {/* 2. Position */}
                   <td>{job.position}</td>
                   
-                  {/* Location */}
+                  {/* 3. Location */}
                   <td className="text-muted">{job.jobLocation}</td>
                   
-                  {/* Status Pills */}
+                  {/* 4. Status */}
                   <td>
                     <span className={`status-tag ${job.status}`}>
                       {job.status}
                     </span>
                   </td>
                   
-                  {/* Date */}
+                  {/* 5. Date */}
                   <td className="text-muted">
                       {new Date(job.createdAt).toLocaleDateString()}
                   </td>
-                  
-                  {/* Links / Actions */}
+
+                  {/* 6. Resume Used (New Column) */}
                   <td>
-                    {job.resumeLink && (
+                    {job.resumeLink ? (
                       <a href={job.resumeLink} target="_blank" className="link-text" rel="noreferrer">
-                        Link ↗
+                        View Resume ↗
                       </a>
+                    ) : (
+                      <span className="text-muted" style={{fontSize: '0.85rem'}}>—</span>
                     )}
-                    <button onClick={() => deleteJob(job._id)} className="btn-icon">🗑</button>
+                  </td>
+                  
+                  {/* 7. Actions (Update & Delete) */}
+                  <td>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      {/* Update Button - Links to an edit page */}
+                      <Link to={`/edit-job/${job._id}`} className="btn-icon" title="Edit">
+                        U
+                      </Link>
+                      
+                      {/* Delete Button */}
+                      <button onClick={() => deleteJob(job._id)} className="btn-icon" title="Delete">
+                        D
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

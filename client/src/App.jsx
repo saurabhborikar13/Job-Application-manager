@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard';
 import AddJob from './pages/AddJob';
 import Register from './pages/Register'; // Import Register
 import './App.css';
+import EditJob from './pages/EditJob';
 
 function App() {
   // Check if user is logged in
@@ -43,6 +44,7 @@ function App() {
           <Route path="/" element={user ? <Dashboard /> : <Navigate to="/register" />} />
           <Route path="/add-job" element={user ? <AddJob /> : <Navigate to="/register" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+          <Route path="/edit-job/:id" element={user ? <EditJob /> : <Navigate to="/register" />} />
         </Routes>
       </div>
     </BrowserRouter>
