@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const navigate = useNavigate();
 
   // 1. Get the token from browser storage
@@ -53,11 +55,36 @@ const Dashboard = () => {
     }
   };
 
+  const filteredJobs = jobs.filter((job) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      job.company.toLowerCase().includes(term) || 
+      job.position.toLowerCase().includes(term) ||
+      job.status.toLowerCase().includes(term)
+    );
+  });
+
   return (
     <div className="dashboard-container">
       <div className="header-section">
         <h2>Applications History</h2>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <input 
+            type="text" 
+            placeholder="Search jobs..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid #333',
+              background: '#1e1e1e',
+              color: 'white',
+              width: '200px'
+            }}
+          />
         <Link to="/add-job" className="btn btn-primary">+ New</Link>
+      </div>
       </div>
 
       <div className="table-wrapper">
@@ -74,14 +101,14 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {jobs.length === 0 ? (
+            {filteredJobs.length.length === 0 ? (
               <tr>
                 <td colSpan="7" style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
                   No jobs found. Click "+ New" to add one!
                 </td>
               </tr>
             ) : (
-              jobs.map((job) => (
+              filteredJobs.map((job) => (
                 <tr key={job._id}>
                   {/* 1. Company Name */}
                   <td className="company-cell">
