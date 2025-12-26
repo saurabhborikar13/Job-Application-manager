@@ -57,6 +57,7 @@ const updateUser = async(req,res)=>{
 
 const getUser= async(req,res)=>{
   const user = await findOne({_id: req.user.userId});
+
   res.status(200).json({ 
     user: { 
       name: user.name, 
