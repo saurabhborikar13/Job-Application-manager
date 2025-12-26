@@ -23,6 +23,13 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide password'],
     minlength: 6,
   },
+  
+  customFields:[    // this is for user convinience
+    {
+      label : {type:String},
+      value :{type:String}
+    }
+  ]
 });
 
 UserSchema.pre('save', async function () {
