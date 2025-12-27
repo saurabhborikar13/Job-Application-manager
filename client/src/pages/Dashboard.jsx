@@ -4,34 +4,37 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
+  const [userProfile, setUserProfile] = useState(null); // 👈 Store User Info here
+  const [searchTerm, setSearchTerm] = useState(""); 
+  
   const navigate = useNavigate();
-
-  // 1. Get the token from browser storage
   const token = localStorage.getItem('token');
 
-  // Fetch jobs when component loads
   useEffect(() => {
     if (!token) {
-      navigate('/register'); // Redirect if not logged in
+      navigate('/register');
     } else {
-      fetchJobs();
+      fetchData();
     }
   }, [token, navigate]);
 
-  const fetchJobs = async () => {
+  const fetchData = async () => {
     try {
-      // 2. Attach the token to the request "Header"
-      const res = await axios.get('https://job-appliaction-manager.onrender.com/api/Job', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      // 1. Fetch Jobs
+      const jobsRes = await axios.get('https://job-appliaction-manager.onrender.com/api/Job', {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setJobs(res.data);
+      setJobs(jobsRes.data);
+
+      // 2. Fetch User Profile (For the Quick Copy buttons)
+      const userRes = await axios.get('https://job-appliaction-manager.onrender.com/api/auth/getUser', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      //  console.log("this point");
+      setUserProfile(userRes.data.user);
+
     } catch (error) {
       console.error(error);
-      // If token is expired (401), force logout
       if (error.response && error.response.status === 401) {
         localStorage.clear();
         navigate('/register');
@@ -43,15 +46,26 @@ const Dashboard = () => {
     if (window.confirm('Are you sure you want to delete this?')) {
       try {
         await axios.delete(`https://job-appliaction-manager.onrender.com/api/Job/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-        fetchJobs();
+        fetchData(); // Refresh list
       } catch (error) {
-        console.error(error);
         alert('Failed to delete job');
       }
+    }
+  };
+
+  // 📋 Helper to Copy Text
+  const copyToClipboard = (text, label) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    // Simple toast notification (using alert for now)
+    // You can replace this with a nice "Copied!" tooltip later
+    const button = document.getElementById(`btn-${label}`);
+    if(button) {
+       const originalText = button.innerText;
+       button.innerText = "✅ Copied!";
+       setTimeout(() => button.innerText = originalText, 1000);
     }
   };
 
@@ -66,6 +80,53 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
+      
+      {/* ⚡ NEW: Quick Application Kit (The "Fast Access" Bar) */}
+      {userProfile && userProfile.customFields && userProfile.customFields.length > 0 && (
+        <div style={{ marginBottom: '30px', background: '#1e1e1e', padding: '20px', borderRadius: '8px', border: '1px solid #333' }}>
+          <h3 style={{ fontSize: '1rem', marginBottom: '15px', color: '#a0a0a0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            ⚡ Application Kit <span style={{fontSize: '0.8rem', opacity: 0.6}}>(Click to Copy)</span>
+          </h3>
+          
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            {/* Always show Email if available */}
+            <button 
+              id="btn-email"
+              onClick={() => copyToClipboard(userProfile.email, 'email')} 
+              className="btn" 
+              style={{ background: '#333', border: '1px solid #444', fontSize: '0.85rem' }}
+            >
+              ✉️ Email
+            </button>
+
+            {/* Loop through the Dynamic Custom Fields */}
+            {userProfile.customFields.map((field, index) => (
+              <button 
+                key={index}
+                id={`btn-${field.label}`}
+                onClick={() => copyToClipboard(field.value, field.label)}
+                className="btn"
+                style={{ 
+                  background: '#2563eb', // Blue background
+                  fontSize: '0.85rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {field.label}
+              </button>
+            ))}
+            
+            {/* Link to Edit Profile */}
+            <Link to="/profile" style={{ marginLeft: 'auto', color: '#666', fontSize: '0.8rem', textDecoration: 'underline' }}>
+              Edit / Add More
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Standard Header & Search */}
       <div className="header-section">
         <h2>Applications History</h2>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -83,10 +144,11 @@ const Dashboard = () => {
               width: '200px'
             }}
           />
-        <Link to="/add-job" className="btn btn-primary">+ New</Link>
-      </div>
+          <Link to="/add-job" className="btn btn-primary">+ New</Link>
+        </div>
       </div>
 
+      {/* Job Table */}
       <div className="table-wrapper">
         <table className="job-table">
           <thead>
@@ -101,62 +163,27 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredJobs.length.length === 0 ? (
+            {filteredJobs.length === 0 ? (
               <tr>
                 <td colSpan="7" style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-                  No jobs found. Click "+ New" to add one!
+                  {searchTerm ? 'No matching jobs found.' : 'No jobs found. Click "+ New" to add one!'}
                 </td>
               </tr>
             ) : (
               filteredJobs.map((job) => (
                 <tr key={job._id}>
-                  {/* 1. Company Name */}
-                  <td className="company-cell">
-                     <span className="icon">📄</span> 
-                     {job.company}
-                  </td>
-                  
-                  {/* 2. Position */}
+                  <td className="company-cell"><span className="icon">📄</span> {job.company}</td>
                   <td>{job.position}</td>
-                  
-                  {/* 3. Location */}
                   <td className="text-muted">{job.jobLocation}</td>
-                  
-                  {/* 4. Status */}
+                  <td><span className={`status-tag ${job.status}`}>{job.status}</span></td>
+                  <td className="text-muted">{new Date(job.createdAt).toLocaleDateString()}</td>
                   <td>
-                    <span className={`status-tag ${job.status}`}>
-                      {job.status}
-                    </span>
+                    {job.resumeLink ? <a href={job.resumeLink} target="_blank" className="link-text" rel="noreferrer">View Resume ↗</a> : <span className="text-muted">—</span>}
                   </td>
-                  
-                  {/* 5. Date */}
-                  <td className="text-muted">
-                      {new Date(job.createdAt).toLocaleDateString()}
-                  </td>
-
-                  {/* 6. Resume Used (New Column) */}
-                  <td>
-                    {job.resumeLink ? (
-                      <a href={job.resumeLink} target="_blank" className="link-text" rel="noreferrer">
-                        View Resume ↗
-                      </a>
-                    ) : (
-                      <span className="text-muted" style={{fontSize: '0.85rem'}}>—</span>
-                    )}
-                  </td>
-                  
-                  {/* 7. Actions (Update & Delete) */}
                   <td>
                     <div style={{ display: 'flex', gap: '10px' }}>
-                      {/* Update Button - Links to an edit page */}
-                      <Link to={`/edit-job/${job._id}`} className="btn-icon" title="Edit">
-                        U
-                      </Link>
-                      
-                      {/* Delete Button */}
-                      <button onClick={() => deleteJob(job._id)} className="btn-icon" title="Delete">
-                        D
-                      </button>
+                      <Link to={`/edit-job/${job._id}`} className="btn-icon" title="Edit">✏️</Link>
+                      <button onClick={() => deleteJob(job._id)} className="btn-icon" title="Delete">🗑</button>
                     </div>
                   </td>
                 </tr>

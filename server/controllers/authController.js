@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const { get } = require('../routes/auth');
+const { StatusCodes } = require('http-status-codes');
 
 // Register User
 const register = async (req, res) => {
@@ -39,7 +40,7 @@ const updateUser = async(req,res)=>{
   const{ name,email,customFields} = req.body;
 
   if(!email || !name){
-    throw new BadRequestError('Please provide all values');
+    return res.status(400).json({ msg: 'Please provide all values' });
   }
 
   const user = await User.findOne({_id:req.user.userId});
@@ -50,14 +51,17 @@ const updateUser = async(req,res)=>{
 
   await user.save();
 
-  const toekn = user.createJWT();
-  res.status(StatusCodes.OK).json(({user,toekn}));
+  const token= user.createJWT();
+  res.status(StatusCodes.OK).json(({user,token}));
 
 };
 
 const getUser= async(req,res)=>{
-  const user = await findOne({_id: req.user.userId});
-
+  const user = await User.findOne({_id: req.user.userId}); 
+  if(!user){
+    throw new UnauthenticatedError("user is not found vai__vi");
+  }
+  
   res.status(200).json({ 
     user: { 
       name: user.name, 
