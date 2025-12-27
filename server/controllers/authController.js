@@ -1,6 +1,5 @@
 const User = require('../models/User');
-const { get } = require('../routes/auth');
-const { StatusCodes } = require('http-status-codes');
+const { BadRequestError, UnauthenticatedError } = require('../errors');
 
 // Register User
 const register = async (req, res) => {
@@ -35,31 +34,32 @@ const login = async (req, res) => {
   res.status(200).json({ user: { name: user.name }, token });
 };
 
-// updating the data
-const updateUser = async(req,res)=>{
-  const{ name,email,customFields} = req.body;
+// Update User
+const updateUser = async(req, res) => {
+  const { name, email, customFields } = req.body;
 
-  if(!email || !name){
+  if (!email || !name) {
     return res.status(400).json({ msg: 'Please provide all values' });
   }
 
-  const user = await User.findOne({_id:req.user.userId});
+  const user = await User.findOne({_id: req.user.userId});
 
-  user.name= name;
-  user.email=email;
+  user.name = name;
+  user.email = email;
   user.customFields = customFields;
 
   await user.save();
 
-  const token= user.createJWT();
-  res.status(StatusCodes.OK).json(({user,token}));
-
+  const token = user.createJWT();
+  res.status(200).json({ user, token });
 };
 
-const getUser= async(req,res)=>{
+// Get User
+const getUser = async(req, res) => {
   const user = await User.findOne({_id: req.user.userId}); 
-  if(!user){
-    throw new UnauthenticatedError("user is not found vai__vi");
+  
+  if (!user) {
+    return res.status(401).json({ msg: "User not found" });
   }
   
   res.status(200).json({ 
@@ -71,4 +71,4 @@ const getUser= async(req,res)=>{
   });
 }
 
-module.exports = { register, login ,updateUser,getUser};
+module.exports = { register, login, updateUser, getUser };
