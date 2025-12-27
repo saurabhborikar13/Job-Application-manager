@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const { BadRequestError, UnauthenticatedError } = require('../errors');
 
 // Register User
 const register = async (req, res) => {
