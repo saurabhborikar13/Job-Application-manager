@@ -55,7 +55,7 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-icon:hover { color: #ef4444; }
 
-/* --- 3. Navbar Styling (New!) --- */
+/* --- 3. Navbar Styling --- */
 .navbar {
   background-color: var(--bg-primary); /* Blend with bg */
   border-bottom: 1px solid var(--border-color);
@@ -102,6 +102,8 @@ a { text-decoration: none; color: inherit; }
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
+  position: relative; /* Added for dropdown */
+  user-select: none;  /* Prevent text highlighting on double click */
 }
 
 .profile-badge:hover {
@@ -328,4 +330,175 @@ input:focus, select:focus { border-color: var(--accent-color); }
   .image-container {
     display: none;
   }
+}
+
+/* --- PROFILE CARDS LAYOUT --- */
+
+/* Grid to hold the cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Individual Card */
+.info-card {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s;
+}
+
+.info-card:hover {
+  border-color: #555;
+  transform: translateY(-2px);
+}
+
+/* Card Header (Label + X) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+  margin-bottom: 5px;
+}
+
+/* Transparent Inputs inside the card */
+.card-input-label {
+  background: transparent;
+  border: none;
+  color: #3b82f6; /* Blue Text */
+  font-weight: bold;
+  font-size: 1rem;
+  width: 80%;
+  padding: 0;
+}
+.card-input-label:focus { outline: none; border-bottom: 1px solid #3b82f6; }
+
+.card-input-value {
+  background: #121212;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  resize: none;
+  font-family: monospace;
+}
+
+/* The Copy Button inside the card */
+.btn-copy {
+  background: #252525;
+  color: white;
+  border: 1px solid #444;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+.btn-copy:hover { background: #333; }
+.btn-copy:active { background: #22c55e; border-color: #22c55e; } /* Green on click */
+
+/* The Big Add Button */
+.add-card-btn {
+  background: transparent;
+  border: 2px dashed #444;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  cursor: pointer;
+  min-height: 180px; /* Match card height */
+  transition: all 0.2s;
+}
+
+.add-card-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.card-box {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+/* --- ⚡ NEW: Navbar Dropdown Menu --- */
+.nav-right {
+  position: relative; /* Needed for dropdown positioning */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 220px;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+  padding: 15px;
+  border-bottom: 1px solid #333;
+  background-color: #252525;
+}
+
+.user-email-display {
+  display: block;
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  margin-top: 4px;
+  word-break: break-all;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  background-color: #333;
+  color: white;
+}
+
+.dropdown-item.logout {
+  color: #ef4444; /* Red color for logout */
+  border-top: 1px solid #333;
+}
+
+.dropdown-item.logout:hover {
+  background-color: #ef4444;
+  color: white;
 }

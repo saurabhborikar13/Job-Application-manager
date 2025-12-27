@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
-  const [userProfile, setUserProfile] = useState(null); // 👈 Store User Info here
   const [searchTerm, setSearchTerm] = useState(""); 
   
   const navigate = useNavigate();
@@ -14,25 +13,16 @@ const Dashboard = () => {
     if (!token) {
       navigate('/register');
     } else {
-      fetchData();
+      fetchJobs();
     }
   }, [token, navigate]);
 
-  const fetchData = async () => {
+  const fetchJobs = async () => {
     try {
-      // 1. Fetch Jobs
-      const jobsRes = await axios.get('https://job-appliaction-manager.onrender.com/api/Job', {
+      const res = await axios.get('https://job-appliaction-manager.onrender.com/api/Job', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setJobs(jobsRes.data);
-
-      // 2. Fetch User Profile (For the Quick Copy buttons)
-      const userRes = await axios.get('https://job-appliaction-manager.onrender.com/api/auth/getUser', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      //  console.log("this point");
-      setUserProfile(userRes.data.user);
-
+      setJobs(res.data);
     } catch (error) {
       console.error(error);
       if (error.response && error.response.status === 401) {
@@ -48,24 +38,10 @@ const Dashboard = () => {
         await axios.delete(`https://job-appliaction-manager.onrender.com/api/Job/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        fetchData(); // Refresh list
+        fetchJobs(); // Refresh list
       } catch (error) {
         alert('Failed to delete job');
       }
-    }
-  };
-
-  // 📋 Helper to Copy Text
-  const copyToClipboard = (text, label) => {
-    if (!text) return;
-    navigator.clipboard.writeText(text);
-    // Simple toast notification (using alert for now)
-    // You can replace this with a nice "Copied!" tooltip later
-    const button = document.getElementById(`btn-${label}`);
-    if(button) {
-       const originalText = button.innerText;
-       button.innerText = "✅ Copied!";
-       setTimeout(() => button.innerText = originalText, 1000);
     }
   };
 
@@ -80,52 +56,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      
-      {/* ⚡ NEW: Quick Application Kit (The "Fast Access" Bar) */}
-      {userProfile && userProfile.customFields && userProfile.customFields.length > 0 && (
-        <div style={{ marginBottom: '30px', background: '#1e1e1e', padding: '20px', borderRadius: '8px', border: '1px solid #333' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '15px', color: '#a0a0a0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            ⚡ Application Kit <span style={{fontSize: '0.8rem', opacity: 0.6}}>(Click to Copy)</span>
-          </h3>
-          
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {/* Always show Email if available */}
-            <button 
-              id="btn-email"
-              onClick={() => copyToClipboard(userProfile.email, 'email')} 
-              className="btn" 
-              style={{ background: '#333', border: '1px solid #444', fontSize: '0.85rem' }}
-            >
-              ✉️ Email
-            </button>
-
-            {/* Loop through the Dynamic Custom Fields */}
-            {userProfile.customFields.map((field, index) => (
-              <button 
-                key={index}
-                id={`btn-${field.label}`}
-                onClick={() => copyToClipboard(field.value, field.label)}
-                className="btn"
-                style={{ 
-                  background: '#2563eb', // Blue background
-                  fontSize: '0.85rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                {field.label}
-              </button>
-            ))}
-            
-            {/* Link to Edit Profile */}
-            <Link to="/profile" style={{ marginLeft: 'auto', color: '#666', fontSize: '0.8rem', textDecoration: 'underline' }}>
-              Edit / Add More
-            </Link>
-          </div>
-        </div>
-      )}
-
       {/* Standard Header & Search */}
       <div className="header-section">
         <h2>Applications History</h2>
