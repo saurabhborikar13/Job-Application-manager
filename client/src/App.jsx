@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import EditJob from './pages/EditJob';
 import Profile from './pages/Profile';
 import './App.css';
+import Stats from './pages/Stats';
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem('user'));
@@ -49,6 +50,7 @@ function App() {
                 <Link to="/" className="nav-link">Dashboard</Link>
                 <Link to="/add-job" className="nav-link">Add Job</Link>
                 <Link to="/profile" className="nav-link">Profile</Link>
+                <Link to="/stats" className="nav-link">Stats</Link>
               </div>
             </div>
 
@@ -102,6 +104,7 @@ function App() {
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
           <Route path="/edit-job/:id" element={user ? <EditJob /> : <Navigate to="/register" />} />
           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/register" />} />
+          <Route path="/stats" element={user ? <Stats /> : <Navigate to="/stats" />} />
         </Routes>
       </div>
     </BrowserRouter>
