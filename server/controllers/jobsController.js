@@ -96,7 +96,7 @@ const showStats=async(req,res)=>{
     return acc;
   },{});
 
-  const defaultStats = {
+  const defaultsStats = {
     pending: stats.pending || 0,
     interview: stats.interview || 0,
     offer : stats.offer || 0,
