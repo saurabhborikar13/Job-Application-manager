@@ -49,7 +49,7 @@ function App() {
               <div className="nav-links">
                 <Link to="/" className="nav-link">Dashboard</Link>
                 <Link to="/add-job" className="nav-link">Add Job</Link>
-                <Link to="/profile" className="nav-link">Profile</Link>
+                <Link to="/profile" className="nav-link">Data</Link>
                 <Link to="/stats" className="nav-link">Stats</Link>
               </div>
             </div>

@@ -41,9 +41,9 @@ const Stats = () => {
       background: bg, 
       borderBottom: `5px solid ${color}`, 
       padding: '2rem', 
-      borderRadius: '8px', 
+      borderRadius: '5px', 
       flex: 1,
-      minWidth: '200px'
+      minWidth: '100px'
     }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontSize: '3rem', fontWeight: 'bold', color: color }}>{count}</span>
