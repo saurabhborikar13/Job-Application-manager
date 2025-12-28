@@ -53,7 +53,7 @@ const Register = () => {
       {/* LEFT SIDE: The Form */}
       <div className="login-container">
         <div className="form-content">
-          <h1 className="brand-logo">JobTracker 🚀</h1>
+          <h1 className="brand-logo">JobSync</h1>
           <h2>{isMember ? 'Welcome Back!' : 'Create Account'}</h2>
           <p className="subtitle">
             {isMember 

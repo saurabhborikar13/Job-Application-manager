@@ -42,13 +42,13 @@ function App() {
   return (
     <BrowserRouter>
       {user && (
-        <nav className="navbar" style={{ zIndex: 100 }}> {/* Ensure Navbar is ON TOP */}
+        <nav className="navbar" style={{ zIndex: 100 }}> {}
           <div className="container nav-content">
              <div className="nav-left">
-              <h1 className="logo">JobTracker 🚀</h1>
+              <h1 className="logo">JobSync</h1>
               <div className="nav-links">
                 <Link to="/" className="nav-link">Dashboard</Link>
-                <Link to="/add-job" className="nav-link">Add Job</Link>
+                {/* <Link to="/add-job" className="nav-link">Add Job</Link> */}
                 <Link to="/profile" className="nav-link">Data</Link>
                 <Link to="/stats" className="nav-link">Stats</Link>
               </div>
@@ -77,7 +77,8 @@ function App() {
                   </div>
 
                   <button onClick={logout} className="dropdown-item logout">
-                    🚪  Logout
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>
+                    Logout
                   </button>
                 </div>
               )}
@@ -89,8 +90,7 @@ function App() {
 
       <div className={user ? "container page-content" : ""}>
         
-        {/* 👇 FIXED: Changed zIndex from 999 to 90. 
-           Now it sits BELOW the Navbar (zIndex 100), so you can click the buttons! */}
+        {}
         {showDropdown && (
           <div 
             style={{position: 'fixed', top:0, left:0, width:'100%', height:'100%', zIndex: 90}} 

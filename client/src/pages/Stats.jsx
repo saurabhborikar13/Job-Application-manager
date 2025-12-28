@@ -37,19 +37,19 @@ const Stats = () => {
 
   // Helper for the top cards
   const statItem = (count, title, color, bg) => (
-    <div style={{ 
-      background: bg, 
-      borderBottom: `5px solid ${color}`, 
-      padding: '2rem', 
-      borderRadius: '5px', 
+    <div style={{
+      background: bg,
+      borderBottom: `5px solid ${color}`,
+      padding: '2rem',
+      borderRadius: '5px',
       flex: 1,
       minWidth: '100px'
     }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontSize: '3rem', fontWeight: 'bold', color: color }}>{count}</span>
         <span style={{ background: color, color: 'white', padding: '5px 10px', borderRadius: '4px' }}>
-          {/* Simple Icon placeholder */}
-          📊
+          {}
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M80-120v-80h800v80H80Zm40-120v-280h120v280H120Zm200 0v-480h120v480H320Zm200 0v-360h120v360H520Zm200 0v-600h120v600H720Z"/></svg>
         </span>
       </header>
       <h5 style={{ margin: '10px 0 0 0', fontSize: '1.2rem', color: '#ccc', textTransform: 'capitalize' }}>{title}</h5>
@@ -71,16 +71,18 @@ const Stats = () => {
       {/* 2. CHART: Monthly Applications */}
       <div style={{ background: '#1e1e1e', padding: '30px', borderRadius: '8px', border: '1px solid #333', height: '400px' }}>
         <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>Monthly Applications</h3>
-        
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={monthlyApplications} margin={{ top: 50 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-            <XAxis dataKey="date" stroke="#a0a0a0" />
-            <YAxis allowDecimals={false} stroke="#a0a0a0" />
-            <Tooltip contentStyle={{ background: '#333', border: 'none', color: '#fff' }} />
-            <Bar dataKey="count" fill="#3b82f6" barSize={75} radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        <div style={{ width: '100%', height: 300 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={monthlyApplications} margin={{ top: 50 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+              <XAxis dataKey="date" stroke="#a0a0a0" />
+              <YAxis allowDecimals={false} stroke="#a0a0a0" />
+              <Tooltip contentStyle={{ background: '#333', border: 'none', color: '#fff' }} />
+              <Bar dataKey="count" fill="#2563eb" barSize={75} radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
       </div>
     </div>
   );
