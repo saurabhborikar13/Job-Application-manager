@@ -1,5 +1,7 @@
 const Job = require('../models/Job');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 
 // 1. GET all jobs (Filtered by User)
 const getAllJobs = async (req, res) => {
